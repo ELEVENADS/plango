@@ -1,17 +1,15 @@
-# Compose 文件格式版本
-version: '3.8' 
-
 # 服务容器入口
 services:
   # nacos 服务发现中间件
   nacos:
-    image: nacos/nacos-server:latest # 镜像及版本
+    image: nacos/nacos-server:v2.2.3 # 镜像及版本
     container_name: nacos # 容器名称
-    enviroment:
-      - MODE = standalone # 单机模式(非集群)
+    environment:
+      - MODE=standalone # 单机模式(非集群)
+      - NACOS_AUTH_ENABLE=false # 关闭认证，方便开发测试
     ports:
-      - "8848": "8848"  # HTTP端口,访问控制台用
-      - "9848": "9848"  # gRPC端口,Nacos 2.x 客户端与服务端通信
+      - "8848:8848"  # HTTP端口,访问控制台用
+      - "9848:9848"  # gRPC端口,Nacos 2.x 客户端与服务端通信
     volumes:
       - ./nacos/logs:/home/nacos/logs # 隐射日志到宿主机 ./nacos/logs
     restart: always # 容器退出时总是重启
@@ -20,10 +18,10 @@ services:
   mysql:
     image: mysql:8.0
     container_name: mysql
-    enviroment:
+    environment:
       MYSQL_ROOT_PASSWORD: 123456
-    prots:
-      - "3306": "3306"
+    ports:
+      - "3307:3306"
     volumes:
       - ./mysql/data:/var/lib/mysql
     restart: always
@@ -33,19 +31,19 @@ services:
     image: redis:7-alpine
     container_name: redis
     ports:
-      - "6379": "6379"
+     - "6379:6379"
     restart: always
 
   # RabbitMQ 消息队列
-  RabbitMQ:
+  rabbitmq:
     image: rabbitmq:3.12-management
     container_name: rabbitmq
     ports:
      - "5672:5672"                        # AMQP 协议端口，Java/Python 客户端连接用
      - "15672:15672"                      # HTTP 管理界面端口
     environment:
-    RABBITMQ_DEFAULT_USER: guest
-    RABBITMQ_DEFAULT_PASS: guest
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
     restart: always
 
   # 搜索引擎
@@ -69,7 +67,7 @@ services:
     environment:
       PARAMS: "--spring.datasource.url=jdbc:mysql://mysql:3306/xxl_job?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&serverTimezone=Asia/Shanghai
                --spring.datasource.username=root
-               --spring.datasource.password=root123"
+               --spring.datasource.password=123456"
     depends_on:
       - mysql                              # 等待 mysql 容器启动后再启动本容器
     restart: always

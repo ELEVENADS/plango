@@ -219,12 +219,12 @@ __marimo__/
 
 
 # docker images
-project/plango/nacos/
-project/plango/mysql/
-project/plango/redis/
-project/plango/rabbitmq/
-project/plango/elasticsearch/
-project/plango/kibana/
-project/plango/logstash/
-project/plango/zipkin/
-project/plango/grafana/
+nacos/
+mysql/
+redis/
+rabbitmq/
+elasticsearch/
+kibana/
+logstash/
+zipkin/
+grafana/

@@ -23,14 +23,14 @@ spring:
   # ---------- RabbitMQ 消息队列 ----------
   rabbitmq:
     host: localhost
-    port: 5673
+    port: 5672
     username: guest
     password: guest
 
   # ---------- Redis 缓存 ----------
   redis:
     host: localhost
-    port: 6380
+    port: 6379
 
 # ==================== MyBatis-Plus 配置 ====================
 mybatis-plus:

@@ -146,3 +146,16 @@ graph TD
     Notify -.->|链路埋点上报| Trace
     Bridge -.->|链路埋点上报| Trace
 ```
+
+## How to start - 2026.06.28
+
+1. Install Docker-Destop on Window OR Linux
+To run powershell in the root and ensure have **docker-compose.yml**. Download the images and use web of **loaclhost:8848** to visit nacos after run the command.
+```bash
+docker compose up -d
+```
+
+2. Config SpringBoot Project and other config you want(take the defult is enought)
+```bash
+mvn spring-boot:run
+```

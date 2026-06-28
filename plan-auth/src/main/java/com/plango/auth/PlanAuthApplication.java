@@ -6,9 +6,10 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 @SpringBootApplication
 @EnableDiscoveryClient
-public class PlanAgentBridgeApplication {
+public class PlanAuthApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(PlanAgentBridgeApplication.class, args);
+
+        SpringApplication.run(PlanAuthApplication.class, args);
     }
 }

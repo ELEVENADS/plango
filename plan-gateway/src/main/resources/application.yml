@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: plan-user
+    name: plan-gateway
   cloud:
     nacos:
       discovery:

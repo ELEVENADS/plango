@@ -147,15 +147,38 @@ graph TD
     Bridge -.->|链路埋点上报| Trace
 ```
 
-## How to start - 2026.06.28
+## How to start – 2026.06.28
 
-1. Install Docker-Destop on Window OR Linux
-To run powershell in the root and ensure have **docker-compose.yml**. Download the images and use web of **loaclhost:8848** to visit nacos after run the command.
+### 1. Start all middleware containers
+Make sure you have **Docker Desktop** installed (Windows / Linux / macOS).
+Open a terminal (PowerShell, bash, etc.) in the project root directory where `docker-compose.yml` is located, then run:
+
 ```bash
 docker compose up -d
 ```
+This will pull all required images and start Nacos, MySQL, Redis, RabbitMQ, etc.
+After the containers are up, you can visit http://localhost:8848/nacos to access the Nacos console (default account: nacos/nacos).
 
-2. Config SpringBoot Project and other config you want(take the defult is enought)
+### 2. Launch all microservices
+**Option A – Using IntelliJ IDEA (recommended)**
+
+**Option B – Using command line**
 ```bash
-mvn spring-boot:run
+# plan-gateway (port 8080)
+cd plan-gateway && mvn spring-boot:run
+
+# plan-auth (port 8081)
+cd plan-auth && mvn spring-boot:run
+
+# plan-user (port 8082)
+cd plan-user && mvn spring-boot:run
+
+# plan-task (port 8083)
+cd plan-task && mvn spring-boot:run
+
+# plan-notification (port 8084)
+cd plan-notification && mvn spring-boot:run
+
+# plan-agent-bridge (port 8085)
+cd plan-agent-bridge && mvn spring-boot:run
 ```

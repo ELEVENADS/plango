@@ -1,6 +1,7 @@
 package com.plango.task.controller;
 
 
+import com.plango.task.Service.PlanService;
 import com.plango.task.entity.Plan;
 import com.plango.task.mapper.PlanMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +16,12 @@ public class PlanController {
     @Autowired
     public PlanMapper planMapper;
 
+    @Autowired
+    public PlanService planService;
+
     @PostMapping
     public String create(@RequestBody Plan plan){
-        planMapper.insert(plan);
+        planService.createPlanAndSendMessage(plan);
         return "计划创建成功，ID：" + plan.getId();
     }
 

@@ -1,6 +1,7 @@
 -- 创建 plan_task 数据库（如果不存在）
-CREATE DATABASE IF NOT EXISTS plango_task DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
+CREATE DATABASE IF NOT EXISTS plango_task DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE plango_task;
+
 -- 建立计划表
 CREATE TABLE IF NOT EXISTS `plan` (
     `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键ID',

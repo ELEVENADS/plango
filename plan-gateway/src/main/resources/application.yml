@@ -10,6 +10,27 @@ spring:
         server-addr: localhost:8848
 #        namespace: dev
         group: DEFAULT_GROUP
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+
+      routes:
+        # 用户服务路由
+        - id: user-service
+          uri: lb://plan-user   # 通过 Nacos 负载均衡调用
+          predicates:
+            - Path=/api/user/**   # 匹配所有 /api/user/ 开头的请求
+          filters:
+            - StripPrefix=1 # 转发前去除 /api 前缀
+        - id: plan-task
+          uri: lb://plan-task
+          predicates:
+            - Path=/api/task/**
+          filters:
+            - StripPrefix=1
+
 
 
 management:

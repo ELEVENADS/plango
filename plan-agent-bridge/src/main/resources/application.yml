@@ -10,7 +10,20 @@ spring:
         server-addr: localhost:8848
 #        namespace: dev
         group: DEFAULT_GROUP
+  datasource:
+    url: jdbc:mysql://localhost:3307/plango_task?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
 
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
 
 management:
   endpoints:

@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMQConfig {
     //定义队列
-    public static final String PLAN_GENERATE_QUEUE = "paln.generate.queue";
+    public static final String PLAN_GENERATE_QUEUE = "plan.generate.queue";
 
     @Bean
     public Queue planGenerateQueue() {

@@ -2,7 +2,7 @@ package com.plango.bridge.listener;
 
 import com.plango.bridge.entity.Plan;
 import com.plango.bridge.mapper.PlanMapper;
-import com.plango.bridge.dto.PlanGenerateMessage;
+import com.plango.common.dto.PlanGenerateMessage;
 import com.rabbitmq.client.Channel;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.support.AmqpHeaders;
@@ -25,7 +25,7 @@ public class PlanGenerateListener {
             Plan plan = planMapper.selectById(message.getPlanId());
             if (plan == null) {
                 System.err.println("计划不存在");
-                channel.basicAck(tag, false);
+//                channel.basicAck(tag, false);
                 return;
             }
             // TODO: 调用 Python Agent 生成内容
@@ -34,10 +34,10 @@ public class PlanGenerateListener {
             planMapper.updateById(plan);
 
             System.out.println("AI 生成完成，planId=" + message.getPlanId());
-            channel.basicAck(tag, false);
+//            channel.basicAck(tag, false);
         } catch (Exception e) {
             e.printStackTrace();
-            channel.basicNack(tag, false, true); // 重新入队
+//            channel.basicNack(tag, false, true); // 重新入队
         }
     }
 }

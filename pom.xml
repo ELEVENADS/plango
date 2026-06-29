@@ -30,6 +30,7 @@
         <module>plan-task</module>
         <module>plan-notification</module>
         <module>plan-agent-bridge</module>
+        <module>plan-common</module>
     </modules>
 
     <dependencyManagement>

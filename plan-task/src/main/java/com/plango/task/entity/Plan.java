@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import lombok.Data;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -11,7 +13,11 @@ import java.util.Map;
 
 @Data
 @TableName("plan")
-public class Plan{
+public class Plan implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
+
     @TableId(type = IdType.AUTO)
     private Long id;
     private Long userId;

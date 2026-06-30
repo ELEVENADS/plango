@@ -30,8 +30,10 @@ spring:
             - Path=/api/task/**
           filters:
             - StripPrefix=1
-
-
+        - id:
+          uri: lb://plan-notification
+          predicates:
+            - Path =/ws/**
 
 management:
   endpoints:

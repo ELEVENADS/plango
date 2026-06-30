@@ -10,13 +10,24 @@ spring:
         server-addr: localhost:8848
 #        namespace: dev
         group: DEFAULT_GROUP
+  rabbitmq:
+    host: localhost
+    port: 5672      # 根据你的实际端口调整
+    username: guest
+    password: guest
+  graphql:
+    websocket:
+      path:
 
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"
+# WebSocket 配置（自定义配置）
+app:
+  websocket:
+    endpoint: /ws                      # 与 WebSocketConfig 中 registerStompEndpoints 一致
+    allowed-origins: "*"               # 开发阶段允许所有跨域
+    # 点对点通知前缀（对应 enableSimpleBroker 中的 /user）
+    user-destination-prefix: /user
+    # 广播前缀
+    topic-prefix: /topic
 
 
 #logging:

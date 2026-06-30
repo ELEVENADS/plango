@@ -2,11 +2,13 @@ package com.plango.bridge.listener;
 
 import com.plango.bridge.entity.Plan;
 import com.plango.bridge.mapper.PlanMapper;
+import com.plango.common.dto.NotificationMessage;
 import com.plango.common.dto.PlanGenerateMessage;
 import com.rabbitmq.client.Channel;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.AmqpHeaders;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.Header;
@@ -23,6 +25,9 @@ public class PlanGenerateListener {
 
     @Autowired
     private RedissonClient redissonClient;
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
 
     @RabbitListener(queues = "plan.generate.queue")
     public void handleGenerate(PlanGenerateMessage message, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag) throws IOException {
@@ -47,6 +52,15 @@ public class PlanGenerateListener {
                     planMapper.updateById(plan);
 
                     System.out.println("AI 生成完成，planId=" + message.getPlanId());
+
+                    NotificationMessage notificationMessage = new NotificationMessage(
+                            plan.getUserId(),
+                            "计划生成完成",
+                            "您的计划「" + plan.getTitle() + "」已生成，请查看。",
+                            "PLAN_GENERATED"
+                    );
+                    rabbitTemplate.convertAndSend("plan.notify.queue", notificationMessage);
+
 //                channel.basicAck(tag, false);
                 } catch (Exception e) {
                     e.printStackTrace();

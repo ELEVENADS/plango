@@ -1,6 +1,9 @@
 from pydantic import BaseModel
 
+from app.agents.plan_generator.schemas import StructuredPlanOutput
+
 
 class PlanGenerateResponse(BaseModel):
-    plan_id: int
-    ai_feedback: str
+    """Response from plan generation, containing both natural and structured output."""
+    natural_output: str = ""
+    structured_output: StructuredPlanOutput = StructuredPlanOutput()

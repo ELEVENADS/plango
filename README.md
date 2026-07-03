@@ -12,7 +12,7 @@ Anyway, PlanGoDaily (PGO) is a simple system for planning â€” kind of like a toâ
 
 This is a distributed microservices project.
 
-- **Backend:** Java 21 (Virtual Threads) + Spring Boot 3 + Spring Cloud
+- **Backend:** Java 21 (Virtual Threads) + Spring Boot 3 + Spring Cloud + FastAPI
 - **Service Discovery & Config:** Nacos
 - **Message Queue:** RabbitMQ
 - **Database:** MySQL 8.0

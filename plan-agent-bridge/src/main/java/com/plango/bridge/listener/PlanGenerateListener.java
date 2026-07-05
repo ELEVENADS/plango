@@ -1,5 +1,6 @@
 package com.plango.bridge.listener;
 
+import com.plango.bridge.client.PlanAgentClient;
 import com.plango.bridge.entity.Plan;
 import com.plango.bridge.mapper.PlanMapper;
 import com.plango.common.dto.NotificationMessage;
@@ -29,6 +30,9 @@ public class PlanGenerateListener {
     @Autowired
     private RabbitTemplate rabbitTemplate;
 
+    @Autowired
+    private PlanAgentClient planAgentClient;
+
     @RabbitListener(queues = "plan.generate.queue")
     public void handleGenerate(PlanGenerateMessage message, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag) throws IOException {
 //        锁设置
@@ -46,9 +50,8 @@ public class PlanGenerateListener {
 //                    channel.basicAck(tag, false);
                         return;
                     }
-                    // TODO: 调用 Python Agent 生成内容
-                    // 模拟生成结果
-                    plan.setAiFeedback("Mock AI feedback for plan: " + plan.getTitle());
+                    String aiFeedback = planAgentClient.generate(plan);
+                    plan.setAiFeedback(aiFeedback);
                     planMapper.updateById(plan);
 
                     System.out.println("AI 生成完成，planId=" + message.getPlanId());

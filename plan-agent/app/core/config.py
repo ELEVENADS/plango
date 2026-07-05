@@ -13,10 +13,17 @@ class Settings(BaseSettings):
     host: str = "localhost"
     port: int = 18000
 
+    # Nacos
+    nacos_server_addr: str = "localhost:8848"
+    nacos_service_name: str = "plan-agent"
+    nacos_service_ip: str = ""
+    nacos_service_port: int = 18000
+    nacos_group: str = "DEFAULT_GROUP"
+
     # External services
     elasticsearch_url: str = "http://localhost:9200"
 
-    model_config = {"env_file": ".env", "env_file_encoding": "utf-8"}
+    model_config = {"env_file": ".env", "env_file_encoding": "utf-8", "extra": "ignore"}
 
 
 settings = Settings()

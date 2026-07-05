@@ -10,7 +10,11 @@ spring:
         server-addr: localhost:8848
 #        namespace: dev
         group: DEFAULT_GROUP
-
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
 
 management:
   endpoints:

@@ -20,6 +20,9 @@ elasticsearch>=8.0.0,<9.0.0
 # Async HTTP
 httpx>=0.27.0
 
+# Nacos service discovery
+nacos-sdk-python>=2.0.0
+
 # Testing
 pytest>=8.0.0
 pytest-asyncio>=0.24.0

@@ -47,7 +47,7 @@ public class PlanGenerateListener {
                     Plan plan = planMapper.selectById(message.getPlanId());
                     if (plan == null) {
                         System.err.println("计划不存在");
-//                    channel.basicAck(tag, false);
+                        channel.basicAck(tag, false);
                         return;
                     }
                     String aiFeedback = planAgentClient.generate(plan);
@@ -64,16 +64,17 @@ public class PlanGenerateListener {
                     );
                     rabbitTemplate.convertAndSend("plan.notify.queue", notificationMessage);
 
-//                channel.basicAck(tag, false);
+                    channel.basicAck(tag, false);
                 } catch (Exception e) {
                     e.printStackTrace();
-//                channel.basicNack(tag, false, true); // 重新入队
+                    channel.basicNack(tag, false, true); // 重新入队
                 } finally {
                     lock.unlock(); // 确保锁释放
                 }
             } else {
-//                获取锁失败
+//                获取锁失败，重新入队
                 System.out.println("获取锁失败，可能被占用"+ message.getPlanId());
+                channel.basicNack(tag, false, true);
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();

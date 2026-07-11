@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.plango.task.service.PlanService;
 import com.plango.task.config.RabbitMQConfig;
 import com.plango.common.dto.PlanGenerateMessage;
+import com.plango.common.dto.PlanSyncMessage;
 import com.plango.task.entity.Plan;
 import com.plango.task.mapper.PlanMapper;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -39,6 +40,8 @@ public class PlanServiceImpl extends ServiceImpl<PlanMapper,Plan> implements Pla
     public void createPlan(Plan plan){
 //        保存计划
         save(plan);
+//        发送 ES 同步消息
+        rabbitTemplate.convertAndSend(RabbitMQConfig.PLAN_SYNC_QUEUE, new PlanSyncMessage(plan.getId(), "CREATE"));
 //        检查ai标志，TRUE则发送到消息队列中
         if(Boolean.TRUE.equals(plan.getAiGenerated())){
             PlanGenerateMessage message = new PlanGenerateMessage();
@@ -70,12 +73,14 @@ public class PlanServiceImpl extends ServiceImpl<PlanMapper,Plan> implements Pla
     @Override
     public void updatePlan(Plan plan) {
         updateById(plan);
+        rabbitTemplate.convertAndSend(RabbitMQConfig.PLAN_SYNC_QUEUE, new PlanSyncMessage(plan.getId(), "UPDATE"));
     }
 
     @CacheEvict(value = "planByUser", key = "#plan.userId")
     @Override
     public void deletePlan(Plan plan) {
         removeById(plan.getId());
+        rabbitTemplate.convertAndSend(RabbitMQConfig.PLAN_SYNC_QUEUE, new PlanSyncMessage(plan.getId(), "DELETE"));
     }
 
 

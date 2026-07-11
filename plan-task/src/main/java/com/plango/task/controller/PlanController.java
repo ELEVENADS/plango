@@ -25,8 +25,10 @@ public class PlanController {
     }
 
     @GetMapping("/user/{userId}")
-    public IPage<Plan> listByUser(@PathVariable Long userId, @PathVariable int page, @PathVariable int size) {
-        return  planService.listByUser(userId,page,size);
+    public IPage<Plan> listByUser(@PathVariable Long userId,
+                                  @RequestParam(defaultValue = "1") int page,
+                                  @RequestParam(defaultValue = "20") int size) {
+        return planService.listByUser(userId, page, size);
     }
 
 }

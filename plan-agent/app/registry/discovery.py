@@ -1,19 +1,23 @@
 import logging
 import socket
 
-import nacos
+import v2.nacos as nacos
 
 from app.core.config import settings
 
 logger = logging.getLogger(__name__)
 
-_client: nacos.NacosClient | None = None
+_client: nacos.NacosNamingService | None = None
 
-
-def _get_client() -> nacos.NacosClient:
+def _get_client() -> nacos.NacosNamingService:
     global _client
     if _client is None:
-        _client = nacos.NacosClient(settings.nacos_server_addr)
+        config = (
+            nacos.ClientConfigBuilder()
+            .server_address(settings.nacos_server_addr)
+            .build()
+        )
+        _client = nacos.NacosNamingService(config)
     return _client
 
 
@@ -30,11 +34,13 @@ def register_service() -> None:
     client = _get_client()
     ip = _resolve_ip()
     try:
-        client.add_naming_instance(
-            settings.nacos_service_name,
-            ip,
-            settings.nacos_service_port,
-            group_name=settings.nacos_group,
+        client.register_instance(
+            nacos.RegisterInstanceParam(
+                service_name=settings.nacos_service_name,
+                ip=ip,
+                port=settings.nacos_service_port,
+                group_name=settings.nacos_group,
+            )
         )
         logger.info(
             "Registered %s at Nacos (%s:%s, group=%s)",
@@ -51,11 +57,13 @@ def deregister_service() -> None:
     client = _get_client()
     ip = _resolve_ip()
     try:
-        client.remove_naming_instance(
-            settings.nacos_service_name,
-            ip,
-            settings.nacos_service_port,
-            group_name=settings.nacos_group,
+        client.deregister_instance(
+            nacos.DeregisterInstanceParam(
+                service_name=settings.nacos_service_name,
+                ip=ip,
+                port=settings.nacos_service_port,
+                group_name=settings.nacos_group,
+            )
         )
         logger.info("Deregistered %s from Nacos", settings.nacos_service_name)
     except Exception:

@@ -87,17 +87,30 @@ class RAGPipeline:
 
         lines = []
         for doc in docs:
-            parts = [f"标题：{doc.get('title', '')}"]
-            desc = doc.get("description")
-            if desc:
-                parts.append(f"描述：{desc}")
-            parts.append(
-                f"日期：{doc.get('plan_date', '')}  "
-                f"{doc.get('start_time', '')}~{doc.get('end_time', '')}"
-            )
-            tags = doc.get("tags")
-            if tags:
-                parts.append(f"标签：{tags}")
+            doc_type = doc.get("doc_type", "")
+            if doc_type:
+                # Knowledge document
+                type_label = {"preference": "用户偏好", "rule": "计划规则", "resource": "参考资料"}.get(doc_type, doc_type)
+                parts = [f"[{type_label}] 标题：{doc.get('title', '')}"]
+                content = doc.get("content")
+                if content:
+                    parts.append(f"内容：{content}")
+                tags = doc.get("tags")
+                if tags:
+                    parts.append(f"标签：{tags}")
+            else:
+                # Plan document
+                parts = [f"标题：{doc.get('title', '')}"]
+                desc = doc.get("description")
+                if desc:
+                    parts.append(f"描述：{desc}")
+                parts.append(
+                    f"日期：{doc.get('plan_date', '')}  "
+                    f"{doc.get('start_time', '')}~{doc.get('end_time', '')}"
+                )
+                tags = doc.get("tags")
+                if tags:
+                    parts.append(f"标签：{tags}")
             lines.append(" | ".join(parts))
 
         return "\n".join(lines)

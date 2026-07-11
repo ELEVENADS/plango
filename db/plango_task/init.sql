@@ -27,3 +27,23 @@ CREATE TABLE IF NOT EXISTS `plan` (
     INDEX `idx_deleted` (`deleted`),
     INDEX `idx_user_date` (`user_id`, `plan_date`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='每日计划表';
+
+-- 建立知识库表
+CREATE TABLE IF NOT EXISTS `knowledge` (
+    `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+    `user_id` BIGINT NOT NULL COMMENT '用户ID',
+    `doc_type` VARCHAR(50) NOT NULL COMMENT '文档类型: preference(偏好), rule(规则), resource(参考资料)',
+    `title` VARCHAR(200) NOT NULL COMMENT '文档标题',
+    `content` TEXT NOT NULL COMMENT '文档正文',
+    `tags` VARCHAR(500) DEFAULT '' COMMENT '标签，逗号分隔',
+    `source` VARCHAR(50) DEFAULT 'manual' COMMENT '来源: manual, upload, system',
+    `metadata` JSON COMMENT '扩展元数据',
+    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    `deleted` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '逻辑删除：0-正常，1-已删除',
+    PRIMARY KEY (`id`),
+    INDEX `idx_user_id` (`user_id`),
+    INDEX `idx_doc_type` (`doc_type`),
+    INDEX `idx_deleted` (`deleted`),
+    INDEX `idx_user_type` (`user_id`, `doc_type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='知识库文档表';

@@ -14,7 +14,6 @@ from app.tools.search import rag_search
 MEMORY_THRESHOLD = 12
 KEEP_RECENT = 6
 
-
 class PlanGenerateAgent(BaseAgent):
     """Conversational plan generation agent with RAG and memory compression."""
 

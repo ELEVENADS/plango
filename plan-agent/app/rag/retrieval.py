@@ -7,8 +7,8 @@ from app.rag.config import rag_settings
 class HybridRetriever:
     """Hybrid retrieval combining BM25 (sparse) and kNN (dense vector) search.
 
-    Runs both searches in parallel, normalizes scores per-result-set, and
-    fuses them with configurable weights.
+    Runs both searches in parallel across plan and knowledge indices,
+    normalizes scores per-result-set, and fuses them with configurable weights.
     """
 
     def __init__(
@@ -23,9 +23,15 @@ class HybridRetriever:
         self.es = es
         self.embedding_model = embedding_model
         self.index_name = index_name or rag_settings.index_name
+        self.knowledge_index = rag_settings.knowledge_index_name
         self.top_k = top_k or rag_settings.retrieval_top_k
         self.bm25_weight = bm25_weight or rag_settings.bm25_weight
         self.vector_weight = vector_weight or rag_settings.vector_weight
+
+    @property
+    def _search_indices(self) -> str:
+        """Comma-separated list of indices to search across."""
+        return f"{self.index_name},{self.knowledge_index}"
 
     async def retrieve(self, query: str, user_id: int) -> list[dict]:
         """Run hybrid search and return ranked plan documents."""
@@ -64,7 +70,12 @@ class HybridRetriever:
                         {
                             "multi_match": {
                                 "query": query,
-                                "fields": ["title^3", "description^2", "tags"],
+                                "fields": [
+                                    "title^3",
+                                    "description^2",
+                                    "content^2",
+                                    "tags",
+                                ],
                                 "type": "best_fields",
                             }
                         }
@@ -74,7 +85,7 @@ class HybridRetriever:
             "size": self.top_k,
             "_source": {"excludes": ["embedding"]},
         }
-        resp = self.es.search(index=self.index_name, body=body)
+        resp = self.es.search(index=self._search_indices, body=body)
         return [
             {"id": h["_id"], "score": h["_score"] or 0.0, **h["_source"]}
             for h in resp["hits"]["hits"]
@@ -99,7 +110,7 @@ class HybridRetriever:
             "size": self.top_k,
             "_source": {"excludes": ["embedding"]},
         }
-        resp = await asyncio.to_thread(self.es.search, index=self.index_name, body=body)
+        resp = await asyncio.to_thread(self.es.search, index=self._search_indices, body=body)
         return [
             {"id": h["_id"], "score": h["_score"] or 0.0, **h["_source"]}
             for h in resp["hits"]["hits"]

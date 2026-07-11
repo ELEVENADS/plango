@@ -1,6 +1,6 @@
 from elasticsearch import Elasticsearch
 
-from app.rag.config import rag_settings
+from app.rag.config import get_embedding_dim, rag_settings
 
 
 def build_mapping(dims: int | None = None) -> dict:
@@ -10,7 +10,7 @@ def build_mapping(dims: int | None = None) -> dict:
     IK analyzer is used for Chinese text fields; falls back to standard if
     the IK plugin is not installed on the ES node.
     """
-    dims = dims or rag_settings.embedding_dim
+    dims = dims or get_embedding_dim()
     return {
         "settings": {
             "number_of_shards": 1,
@@ -61,11 +61,72 @@ def build_mapping(dims: int | None = None) -> dict:
     }
 
 
+def build_knowledge_mapping(dims: int | None = None) -> dict:
+    """Build the ES index mapping for generic knowledge documents.
+
+    Supports multiple doc types (preference, rule, resource) plus
+    chunk-level tracking for long text splitting.
+    """
+    dims = dims or get_embedding_dim()
+    return {
+        "settings": {
+            "number_of_shards": 1,
+            "number_of_replicas": 0,
+            "refresh_interval": "5s",
+        },
+        "mappings": {
+            "properties": {
+                "doc_id": {"type": "keyword"},
+                "user_id": {"type": "long"},
+                "doc_type": {"type": "keyword"},
+                "title": {
+                    "type": "text",
+                    "analyzer": "ik_max_word",
+                    "search_analyzer": "ik_smart",
+                    "fields": {"keyword": {"type": "keyword"}},
+                },
+                "content": {
+                    "type": "text",
+                    "analyzer": "ik_max_word",
+                    "search_analyzer": "ik_smart",
+                },
+                "tags": {
+                    "type": "text",
+                    "analyzer": "ik_max_word",
+                    "search_analyzer": "ik_smart",
+                },
+                "source": {"type": "keyword"},
+                "chunk_index": {"type": "integer"},
+                "parent_id": {"type": "keyword"},
+                "metadata": {"type": "object", "enabled": False},
+                "embedding": {
+                    "type": "dense_vector",
+                    "dims": dims,
+                    "index": True,
+                    "similarity": "cosine",
+                },
+                "embedding_text": {"type": "text"},
+                "deleted": {"type": "boolean"},
+                "created_at": {"type": "date"},
+                "updated_at": {"type": "date"},
+            }
+        },
+    }
+
+
 def create_index(es: Elasticsearch, index_name: str | None = None, dims: int | None = None) -> str:
-    """Create the ES index if it does not already exist. Returns the index name."""
+    """Create the ES plan index if it does not already exist. Returns the index name."""
     index_name = index_name or rag_settings.index_name
     if not es.indices.exists(index=index_name):
         es.indices.create(index=index_name, body=build_mapping(dims))
+    return index_name
+
+
+def create_knowledge_index(es: Elasticsearch, dims: int | None = None) -> str:
+    """Create the ES knowledge index if it does not already exist. Returns the index name."""
+    index_name = rag_settings.knowledge_index_name
+    if not es.indices.exists(index=index_name):
+        es.indices.create(index=index_name, body=build_knowledge_mapping(dims))
     return index_name
 
 

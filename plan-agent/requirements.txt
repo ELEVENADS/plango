@@ -20,8 +20,8 @@ elasticsearch>=8.0.0,<9.0.0
 # Async HTTP
 httpx>=0.27.0
 
-# Nacos service discovery
-nacos-sdk-python>=2.0.0
+# Nacos service discovery (v3 API: v2.nacos)
+nacos-sdk-python>=3.0.0
 
 # Testing
 pytest>=8.0.0

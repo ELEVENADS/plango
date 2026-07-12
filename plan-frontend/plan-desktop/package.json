@@ -1,0 +1,31 @@
+{
+  "name": "plan-desktop",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "Elevenads",
+  "type": "commonjs",
+  "main": "out/main/main.js",
+  "scripts": {
+    "start": "concurrently -k \"vite\" \"wait-on http://localhost:5173 && electron .\"",
+//    编译ts + 阻塞vite + 等待electron
+    "dev": "tsc && concurrently -k \"vite\" \"wait-on http://localhost:5173 && electron .\"",
+    "build": "tsc && vite build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "electron": "^43.1.0",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "vite": "^8.1.4"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.1",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.3",
+    "concurrently": "^10.0.3",
+    "typescript": "^7.0.2",
+    "wait-on": "^9.0.10"
+  }
+}

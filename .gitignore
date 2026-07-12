@@ -218,6 +218,7 @@ __marimo__/
 .streamlit/secrets.toml
 
 
+
 # docker images
 nacos/
 mysql/
@@ -229,7 +230,7 @@ logstash/
 zipkin/
 grafana/
 
-
+#fontend
 node_modules
 out
 dist

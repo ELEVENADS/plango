@@ -1,3 +1,9 @@
+import Background from "./component/Background";
+
 export default function App() {
-  return <h1>Hello PlanGo!</h1>
+  return (
+    <Background/>
+  )
 }
+
+

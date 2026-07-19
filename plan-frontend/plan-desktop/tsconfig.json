@@ -11,9 +11,9 @@
     "rootDir": "src",
     "paths": {
       "@/*": ["./src/*"],
-      "@render/*": ["./src/render/*"]
+      "@render/*": ["./src/render/*"],
     }
   },
-  "include": ["src/main/**/*"],
-  "exclude": ["src/render"]
+  "include": ["src/main/**/*", "src/render/**/*", "global.d.ts"]
 }
+

@@ -1,9 +1,7 @@
-import Background from "./component/Background";
+import PortalPage from "./pages/PortalPage";
 
 export default function App() {
-  return (
-    <Background/>
-  )
+  return <PortalPage />;
 }
 
 
